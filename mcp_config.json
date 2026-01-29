@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "microstrategy": {
+      "command": "python",
+      "args": ["-m", "mstr_mcp_server"],
+      "env": {
+        "MSTR_BASE_URL": "https://tutorial.microstrategy.com/MicroStrategyLibrary/api",
+        "MSTR_PROJECT_ID": "YOUR_PROJECT_ID",
+        "MSTR_USERNAME": "glagrange",
+        "MSTR_PASSWORD_PATH": "/run/secrets/mstr_password"
+      }
+    }
+  }
+}
