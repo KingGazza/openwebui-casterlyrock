@@ -1,0 +1,20 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3000:8080"
+    volumes:
+      - open-webui:/app/backend/data
+      # Mount the MCP Config
+      - ./mcp_config.json:/app/backend/data/mcp_config.json:ro
+      # Mount your password file from the host path
+      - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
+    environment:
+      - DATA_DIR=/app/backend/data
+      # We tell the MCP server where to find the password via an env var
+      - MSTR_PASSWORD_FILE=/run/secrets/mstr_password
+    restart: always
+
+volumes:
+  open-webui:
