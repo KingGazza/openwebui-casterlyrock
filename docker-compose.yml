@@ -23,9 +23,10 @@ services:
     container_name: mcpo
     restart: always
     environment:
-      # If your MCP tools need that same password file, mount it here too
-      - MSTR_PASSWORD_FILE=/run/secrets/mstr_password
+      - TZ=Europe/London  # <--- CHANGE THIS to your actual timezone
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       # Link your config so mcpo knows which tools to run
       - /home/support/mcp/mcp_config.json:/app/mcp_config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
