@@ -12,9 +12,31 @@ services:
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
     environment:
       - DATA_DIR=/app/backend/data
-      # We tell the MCP server where to find the password via an env var
       - MSTR_PASSWORD_FILE=/run/secrets/mstr_password
+      - WEBUI_SECRET_KEY=change_me_to_a_random_string  # Recommended for tool stability
     restart: always
+    networks:
+      - mcp-net
+
+  mcpo:
+    image: ghcr.io/open-webui/mcpo:main
+    container_name: mcpo
+    restart: always
+    environment:
+      # If your MCP tools need that same password file, mount it here too
+      - MSTR_PASSWORD_FILE=/run/secrets/mstr_password
+    volumes:
+      # Link your config so mcpo knows which tools to run
+      - ./mcp_config.json:/app/mcp_config.json:ro
+      - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
+    # Run mcpo pointing to the config file
+    command: mcpo --host 0.0.0.0 --port 8000 --config /app/mcp_config.json
+    networks:
+      - mcp-net
+
+networks:
+  mcp-net:
+    driver: bridge
 
 volumes:
   open-webui:
