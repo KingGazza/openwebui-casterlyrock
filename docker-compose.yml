@@ -6,14 +6,16 @@ services:
       - "3000:8080"
     volumes:
       - open-webui:/app/backend/data
-      # Mount the MCP Config
       - ./mcp_config.json:/app/backend/data/mcp_config.json:ro
-      # Mount your password file from the host path
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
+      # Sync time for the WebUI container too
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     environment:
       - DATA_DIR=/app/backend/data
       - MSTR_PASSWORD_FILE=/run/secrets/mstr_password
-      - WEBUI_SECRET_KEY=change_me_to_a_random_string  # Recommended for tool stability
+      - WEBUI_SECRET_KEY=change_me_to_a_random_string
+      - TZ=America/New_York
     restart: always
     networks:
       - mcp-net
@@ -23,15 +25,15 @@ services:
     container_name: mcpo
     restart: always
     environment:
-      - TZ=Europe/London  # <--- CHANGE THIS to your actual timezone
+      - TZ=America/New_York
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      # Link your config so mcpo knows which tools to run
-      - /home/support/mcp/mcp_config.json:/app/mcp_config.json:ro
+      # Mounting to a standard path
+      - /home/support/mcp/mcp_config.json:/app/config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
-    # Run mcpo pointing to the config file
-    command: mcpo --host 0.0.0.0 --port 8000 --config /app/mcp_config.json
+    # Point command to the mounted config path
+    command: mcpo --host 0.0.0.0 --port 8000 --config /app/config.json
     networks:
       - mcp-net
 
