@@ -8,9 +8,6 @@ services:
       - open-webui:/app/backend/data
       - ./mcp_config.json:/app/backend/data/mcp_config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
-      # Sync time for the WebUI container too
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
     environment:
       - DATA_DIR=/app/backend/data
       - MSTR_PASSWORD_FILE=/run/secrets/mstr_password
@@ -27,8 +24,6 @@ services:
     environment:
       - TZ=America/New_York
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       # Mounting to a standard path
       - /home/support/mcp/mcp_config.json:/app/config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
