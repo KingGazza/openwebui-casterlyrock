@@ -27,7 +27,7 @@ services:
       - MSTR_PASSWORD_FILE=/run/secrets/mstr_password
     volumes:
       # Link your config so mcpo knows which tools to run
-      - ./mcp_config.json:/app/mcp_config.json:ro
+      - /home/support/mcp_config.json:/app/mcp_config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
     # Run mcpo pointing to the config file
     command: mcpo --host 0.0.0.0 --port 8000 --config /app/mcp_config.json
