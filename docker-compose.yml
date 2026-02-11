@@ -21,6 +21,8 @@ services:
     image: ghcr.io/open-webui/mcpo:main
     container_name: mcpo
     restart: always
+    ports:
+      - "8001:8000"  # This maps host port 8001 to container port 8000
     environment:
       - TZ=America/New_York
     volumes:
