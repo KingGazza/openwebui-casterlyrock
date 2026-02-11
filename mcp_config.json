@@ -4,7 +4,7 @@
       "command": "python",
       "args": ["-m", "mstr_mcp_server"],
       "env": {
-        "MSTR_BASE_URL": "https://tutorial.microstrategy.com/MicroStrategyLibrary/api",
+        "MSTR_BASE_URL": "https://tutorial.microstrategy.com/MicroStrategyLibraryInsights/api",
         "MSTR_PROJECT_ID": "AD3EF2F5B782416A906E3D409D08F207",
         "MSTR_USERNAME": "glagrange",
         "MSTR_PASSWORD_PATH": "/run/secrets/mstr_password"
