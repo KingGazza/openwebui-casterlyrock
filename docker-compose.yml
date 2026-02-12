@@ -11,7 +11,7 @@ services:
     environment:
       - DATA_DIR=/app/backend/data
       - MSTR_PASSWORD_FILE=/run/secrets/mstr_password
-      - WEBUI_SECRET_KEY=change_me_to_a_random_string
+      - WEBUI_SECRET_KEY=f355b0573904fdee3ea09b9054ce5c184a6fdfe6fb1c31d7de9666e45a0aae7e
       - TZ=America/New_York
     restart: always
     networks:
