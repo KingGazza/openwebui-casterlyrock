@@ -22,14 +22,17 @@ services:
     container_name: mcpo
     restart: always
     ports:
-      - "8001:8000"  # This maps host port 8001 to container port 8000
+      - "8001:8000"
     environment:
       - TZ=America/New_York
+      # MCPO uses an internal database to store dynamic client_ids
+      - MCPO_DATABASE_URL=sqlite:////app/data/mcpo.db
     volumes:
-      # Mounting to a standard path
       - /home/support/mcp/mcp_config.json:/app/config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
-    # Point command to the mounted config path
+      # CRITICAL: Persistent storage for Dynamic Registration credentials
+      - mcpo-data:/app/data
+    # Ensure mcpo points to the internal DB and config
     command: mcpo --host 0.0.0.0 --port 8000 --config /app/config.json
     networks:
       - mcp-net
@@ -40,3 +43,4 @@ networks:
 
 volumes:
   open-webui:
+  mcpo-data: # New volume for registration persistence
