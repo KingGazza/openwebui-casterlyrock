@@ -2,11 +2,11 @@ services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
+    restart: always
     ports:
       - "3000:8080"
     volumes:
       - open-webui:/app/backend/data
-      # Match the host path you verified is working
       - /home/support/mcp/mcp_config.json:/app/backend/data/mcp_config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
     environment:
@@ -14,14 +14,12 @@ services:
       - MSTR_PASSWORD_FILE=/run/secrets/mstr_password
       - WEBUI_SECRET_KEY=f355b0573904fdee3ea09b9054ce5c184a6fdfe6fb1c31d7de9666e45a0aae7e
       - TZ=America/New_York
-    restart: always
     networks:
       - mcp-net
 
   mcpo:
     image: ghcr.io/open-webui/mcpo:main
     container_name: mcpo
-    user: root
     restart: always
     ports:
       - "8001:8000"
@@ -29,18 +27,15 @@ services:
       - TZ=America/New_York
       - MCPO_DATABASE_URL=sqlite:////app/data/mcpo.db
     volumes:
-      # Use a unique name for the internal path to avoid "Not a directory" errors
-      - /home/support/mcp/mcp_config.json:/app/mcp_config_internal.json:ro
+      # Main Config
+      - /home/support/mcp/mcp_config.json:/app/config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
       - mcpo-data:/app/data
-    entrypoint: >
-      sh -c "
-      rm -f /root/.npmrc &&
-      npm config set registry https://registry.npmjs.org/ &&
-      npm config set //registry.npmjs.org/:_authToken='' &&
-      npm install -g @n8n/mcp-server @modelcontextprotocol/server-ssh &&
-      mcpo --host 0.0.0.0 --port 8000 --config /app/mcp_config_internal.json
-      "
+      # Local MCP Server Mounts (bypasses container NPM registry)
+      - /home/support/mcp/n8n-server:/app/n8n-server:ro
+      - /home/support/mcp/mcp-servers/src/ssh:/app/ssh-server:ro
+    # Explicitly point to the config file
+    command: mcpo --host 0.0.0.0 --port 8000 --config /app/config.json
     networks:
       - mcp-net
 
