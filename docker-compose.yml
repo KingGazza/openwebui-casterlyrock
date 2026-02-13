@@ -6,6 +6,7 @@ services:
       - "3000:8080"
     volumes:
       - open-webui:/app/backend/data
+      # Match the host path you verified is working
       - /home/support/mcp/mcp_config.json:/app/backend/data/mcp_config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
     environment:
@@ -20,7 +21,7 @@ services:
   mcpo:
     image: ghcr.io/open-webui/mcpo:main
     container_name: mcpo
-    user: root  # Required to install global npm packages
+    user: root
     restart: always
     ports:
       - "8001:8000"
@@ -28,17 +29,17 @@ services:
       - TZ=America/New_York
       - MCPO_DATABASE_URL=sqlite:////app/data/mcpo.db
     volumes:
-      - /home/support/mcp/mcp_config.json:/app/config.json:ro
+      # Use a unique name for the internal path to avoid "Not a directory" errors
+      - /home/support/mcp/mcp_config.json:/app/mcp_config_internal.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
       - mcpo-data:/app/data
-    # This script clears the bad npm token and installs your tools before starting the app
     entrypoint: >
       sh -c "
       rm -f /root/.npmrc &&
       npm config set registry https://registry.npmjs.org/ &&
       npm config set //registry.npmjs.org/:_authToken='' &&
       npm install -g @n8n/mcp-server @modelcontextprotocol/server-ssh &&
-      mcpo --host 0.0.0.0 --port 8000 --config /app/config.json
+      mcpo --host 0.0.0.0 --port 8000 --config /app/mcp_config_internal.json
       "
     networks:
       - mcp-net
