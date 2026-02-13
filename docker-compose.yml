@@ -27,14 +27,12 @@ services:
       - TZ=America/New_York
       - MCPO_DATABASE_URL=sqlite:////app/data/mcpo.db
     volumes:
-      # Main Config
       - /home/support/mcp/mcp_config.json:/app/config.json:ro
       - /home/support/variable/mstr.txt:/run/secrets/mstr_password:ro
       - mcpo-data:/app/data
-      # Local MCP Server Mounts (bypasses container NPM registry)
+      # Mount the folders we just built on the host
       - /home/support/mcp/n8n-server:/app/n8n-server:ro
-      - /home/support/mcp/mcp-servers/src/ssh:/app/ssh-server:ro
-    # Explicitly point to the config file
+      - /home/support/mcp/ssh-server:/app/ssh-server:ro
     command: mcpo --host 0.0.0.0 --port 8000 --config /app/config.json
     networks:
       - mcp-net
